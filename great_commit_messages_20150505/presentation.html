@@ -9,26 +9,24 @@ body {
   padding:0;
   font-weight:bold;
 }
-
 h1, h2, h3, p {
   margin:0;
 }
-
 em, a {
   font-style:normal;
   color:#8dbd0c;
 }
-
+p {
+  display: none;
+}
 a {
   background: #34d0e7;
   color:#000;
   text-decoration:none;
 }
-
 img {
   width:100%;
 }
-
 div {
   cursor:pointer;
   cursor:hand;
@@ -38,28 +36,41 @@ div {
   padding:75px;
   line-height:97%;
 }
-
 div.center {
   text-align:center;
 }
-
 div.imageText {
   text-shadow:0px 0px 5px rgba(0,0,0,0.2);
+}
+span.footnoteRight {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  font-size: .3em;
+  text-align:right;
 }
 </style><script type='text/javascript'>
 window.onload = function() {
     var s = document.getElementsByTagName('div'), ti;
     if (!s) return;
-    big = { current: 0, forward: fwd, reverse: rev, go: go, length: s.length };
+    var big = { current: 0, forward: fwd, reverse: rev, go: go, length: s.length };
+    window.big = big;
+    function resize() {
+        var w = window.innerWidth, h = window.innerHeight, e = s[big.current];
+        e.style.fontSize = h + 'px';
+        for (var i = h - 2; e.offsetWidth > w || e.offsetHeight > h; i -= 2) {
+            e.style.fontSize = i + 'px';
+        }
+        e.style.marginTop = ((h - e.offsetHeight) / 2) + 'px';
+    }
     function go(n) {
         big.current = n;
-        var i = 1e3, e = s[n], t = parseInt(e.dataset.timeToNext || 0, 10);
+        var e = s[n], t = parseInt(e.dataset.timeToNext || 0, 10);
         document.body.className = e.dataset.bodyclass || '';
         for (var k = 0; k < s.length; k++) s[k].style.display = 'none';
         e.style.display = 'inline';
-        e.style.fontSize = i + 'px';
         if (e.firstChild && e.firstChild.nodeName === 'IMG') {
-            document.body.style.backgroundImage = 'url(' + e.firstChild.src + ')';
+            document.body.style.backgroundImage = 'url("' + e.firstChild.src + '")';
             e.firstChild.style.display = 'none';
             if ('classList' in e) e.classList.add('imageText');
         } else {
@@ -68,11 +79,7 @@ window.onload = function() {
         }
         if (ti !== undefined) window.clearInterval(ti);
         if (t > 0) ti = window.setTimeout(fwd, (t * 1000));
-        while ((e.offsetWidth > window.innerWidth ||
-            e.offsetHeight > window.innerHeight) && i >= 0) {
-            e.style.fontSize = (i -= 2) + 'px';
-        }
-        e.style.marginTop = ((window.innerHeight - e.offsetHeight) / 2) + 'px';
+        resize();
         if (window.location.hash !== n) window.location.hash = n;
         document.title = e.textContent || e.innerText;
     }
@@ -85,8 +92,8 @@ window.onload = function() {
     };
     document.ontouchstart = function(e) {
         var x0 = e.changedTouches[0].pageX;
-        document.ontouchend = function(e) {
-            var x1 = e.changedTouches[0].pageX;
+        document.ontouchend = function(e2) {
+            var x1 = e2.changedTouches[0].pageX;
             if (x1 - x0 < 0) fwd();
             if (x1 - x0 > 0) rev();
         };
@@ -100,9 +107,91 @@ window.onload = function() {
         var c = parse_hash();
         if (c !== big.current) go(c);
     };
+    window.onresize = resize;
     go(big.current);
 };
 </script></head><body>
 
-
 <div><em>Great</em> Commit Messages</div>
+<p>
+  Today, I'd like to talk about Great Commit Messages:
+  + Why they're important
+  + The 7 Rules of Writing Them
+</p>
+
+<div>Why</div>
+<p>
+  When it comes to writing great commit messages,
+  "Why" is both the question and the answer.
+  Let's start with the question:
+</p>
+
+<div>Why <em>version control</em>?</div>
+<p>
+  Why do we use version control?
+  (What if we didn't?)
+  ...
+  + System of Record
+  + Collaboration
+  + Coordination
+  + Authoritative Source on the Code
+</p>
+
+<div>Version control is <em>important</em></div>
+<p>I don't think anybody here will disagree with this statement</p>
+
+<div><em>Show of hands:<br/></em> People who have looked at project history</div>
+<p>
+  Who here has ever looked at a project's history?
+  Maybe you were troubleshooting a bug;
+  Maybe you were looking for an explanation
+
+  (Nearly Unanimous!)
+</p>
+
+<div>Why?</div>
+<p>
+  Why (for what purposes) have you looked at source control history?
+</p>
+
+<div class="center">Repository of <em>Knowledge</em></div>
+<p>
+  Source control history is Repository of Knowledge,
+  not just of code.
+</p>
+
+<div>Code tells you <em>what</em> changed</div>
+<div>Great commit messages tell you <em>why</em></div>
+<p>
+  The secret to writing great commit messages is
+  to share knowledge,
+  and to explain WHY.
+
+  If you do this, you will:
+</p>
+
+<div>Switch contexts <em>faster</em></div>
+<div>Make <em>well-informed</em> decisions</div>
+<div>Make them <em>quicker</em></div>
+<p>
+  If your commit messages explain why,
+    + You can switch contexts faster
+    + Your decisions will be well-informed
+    + You can make decisions quicker
+
+  In other words:
+</p>
+
+<div>Less time <em>seeking</em> answers</div>
+<div>More time <em>creating</em> answers</div>
+<p>
+  Basically, you spend less time seeking answers
+  and more time creating them.
+
+  In order to do that, we need a standard for
+  conveying information in the git history
+</p>
+
+<div>7 Rules of <em>great</em> commit messages</div>
+<p>
+</p>
