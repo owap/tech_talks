@@ -198,7 +198,7 @@ window.onload = function() {
 <p>
   I did not come up with these, but I like them.
   So does everybody else on the whole internet.
-  
+
   BUT FIRST, an example:
 </p>
 
@@ -216,17 +216,39 @@ window.onload = function() {
 
 <div>How to make <em>great</em> commit messages?</div>
 
+<div>Think about your <em>Audience</em></div>
+<div>Future developers</div>
+<div>Future <em>you</em></div>
+<div><em>Empower</em> them to make the <em>best</em> decisions:</div>
+
+<div>Tag issues / Add URLs in the description</div>
+<p>
+  Give context to the changes you're making.
+  If you're working on a story logged in Rally or Github,
+  specifying the issue number will help future developers
+  understand the story behind your changes.
+</p>
 <div>Explain Motivation</div>
 <p>
   This can sometimes be self-explanatory, but it never hurts to provide context
+  "Remove trailing commas to fix JSHint" as opposed to just "Remove trailing commas"
 </p>
 
 <div>Explain Tradeoffs</div>
 <p>
   Software development is a constant exercise in picking from a set of tradeoffs.
-  When modifying a piece of code, 
-  knowing the tradeoffs at play can save time and effort, 
+  When modifying a piece of code,
+  knowing the tradeoffs at play can save time and effort,
   resulting in higher quality software
+</p>
+
+<div>Explain Other Approaches</div>
+<p>
+  This gives future developers more context to make
+  informed decisions about changes to the code
+
+  This is especially helpful when tradeoffs are being made
+  "in the interest of time"
 </p>
 
 <div>Discuss Difficulties</div>
@@ -235,13 +257,39 @@ window.onload = function() {
   and may also facilitate discussions about tradeoffs
 </p>
 
-<div>Explain Other Approaches</div>
+<div>Mention relevant commits</div>
 <p>
-  This gives future developers more context to make 
-  informed decisions about changes to the code
+  When fixing bugs or removing old code,
+  Sticking the hash in the commit message can help close the loop
+  If issues with YOUR code come up
+
+  EX: Trying to increase max zoom level in stacks
 </p>
 
-<div>Be careful to not write <em>overly-verbose </em>commit messages</div>
+<div>Take <em>pride</em> in your messages!</div>
 <p>
-  Like this slide, they may become hard to read
+  You're doing yourself and your team a favor;
+  you should be proud of that!
+  An investment in quality commit messages will pay dividends in
 </p>
+
+<div><em>Great</em> commit messages will:</div>
+<div>Pay dividends in <em>speed</em></div>
+<div>Pay dividends in <em>quality</em></div>
+<div>Pay dividends in <em>productivity</em></div>
+<div>Pay dividends in <em>CA$H MONEY</em></div>
+
+<div>Bring the Future here <em>faster</em></div>
+<div>Write <em>great</em> commit messages</div>
+
+<div class="center">Thank You</div>
+
+<div>
+  <em>1.</em> Separate subject from body with a blank line<br/>
+  <em>2.</em> Limit the subject line to 50 characters</br>
+  <em>3.</em> Capitalize the subject line</br>
+  <em>4.</em> Do not end the subject line with a period</br>
+  <em>5.</em> Use the imperative mood in the subject line</br>
+  <em>6.</em> Wrap the body at 72 characters</br>
+  <em>7.</em> Use the body to explain what and why vs. how
+</div>
