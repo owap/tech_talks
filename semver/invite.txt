@@ -1,0 +1,20 @@
+Join us on Friday, May 22 for our next OpenWhere Tech Talk: Semantic Versioning
+and Cutting Releases. In this talk, we'll cover the following topics:
+
++ What is Semantic Versioning?
++ Why is Semantic Versioning useful, especially re: our growing customer base?
++ How do we use it? (Cutting Releases)
+
+The second and third topics will lead us nicely into a discussion on how we can
+begin versioning (and cutting releases of) our software -- an especially
+important topic with the advent of "Configurator," OpenWhere core products, and
+our multiple commercial customers.
+
+As of right now, this talk is "bring your own lunch," but I will send out
+notifications if this changes.
+
+We've allocated an hour for this tech talk, so please bring your opinions and 
+previous victories re: versioning and release-cutting to share with the team. 
+This discussion will inform company culture/policy going forward!
+
+Thank you, and I look forward to seeing everybody's smiling faces next Friday!
