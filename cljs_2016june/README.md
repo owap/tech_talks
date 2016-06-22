@@ -109,17 +109,197 @@ the benefits.
 "Everything you love about the Javascript ecosystem, without the Javascript!"
   - Built-in features of the language (lodash, immutable data structures)
   - Google Closure Compiler (webpack++)
-  - Leinengen (npm++)
+  - Leinengen (yeoman/npm++)
   - Figwheel (live development/auto reload/human debugging)
 
+# The Digest Cycle; State vs. Immutability
+
+## AngularJS
+Ask any developer who has touched the UI on our team: state management in Angular
+is a pain. When I say state, I'm talking about the sum total of all variables in
+the system; everything that's on the screen, and everything that could be lurking
+on the next screen. Search results, which buttons are toggled on, the color
+of the datasets; if it's interactive or navigable in some way, state is involved.
+
+![Angular State Diagram 1](./angular_state1.png)
+
+A view comprises a certain set of items on the screen. Every view has an
+associated controller, which holds the variables (state) associated with that
+view.  When a user changes something on the screen, the Digest Cycle runs, and
+that value gets updated in the controller.  Likewise, if some logic in the
+controller runs that causes a value to be updated, the digest cycle will update
+the view automatically. Two-way data binding.
+
+Sometimes, updating one variable can cause changes to cascade to multiple
+variables, and many things will need to be updated at once. That's no problem:
+the digest cycle will run up to 10 times for any given event, but any more than
+that and the system will throw an error (to prevent infinite recursion).
+
+In addition to the system updating its state incrementally, we have the problem
+of state being transient. If the user navigates to a different view, the
+controller associated with the previous view is destroyed, and all the state
+built up in that controller is lost.
+
+State that needs to persist between Views gets saved to a Service, where the
+controller can pull out the cached data if we navigate back to a previous view.
+Services are persistent as long as the application is running, but are themselves
+reset every time the browser is refreshed.
+![Angular State Diagram 2](./angular_state2.png)
+
+If we want to persist data beyond a browser session, we will need to employ
+external services (such as a database) for storing our information long-term.
+How to coordinate external services with Services/Controllers/Views is its own
+can of worms.
+
+## State vs. Identity
+Before we contrast Angular with Clojurescript's state management, we need to talk
+about how Clojure views state.
+
+Clojure makes a strong distinction between **state** and **identity**, and strongly
+favors the concept of immutability. State should be immutable; identity should
+be what changes.
+
+For example, let's look at Scott Herman's employment history. Currently, he works
+at BlackSky. Prior to this, he was at OpenWhere, DigitalGlobe, GeoEye, VisualCV;
+on and on back through time.
+
+No matter now many jobs Scott Herman takes in the future, his employment history
+will not change. That is the immutable state of "Scott's employer." The
+*identity* of his employer will change with each new job he takes, but he cannot
+mutate his employment history.
+
+You can think of Git as another tool that employs identity and immutable state.
+Each commit adds to the state of the codebase, and the *identity* of the codebase
+is the sum of all check-ins. Git does not enforce immutability, as anybody who has
+force-pushed a commit can tell you, but it's generally considered bad form to
+change history.
+
+## State in Clojure
+There are some [great writeups](http://hypirion.com/musings/understanding-persistent-vector-pt-1)
+(complete with diagrams!) that do a excellent job explaining the implementation
+of Clojure data structures, so I won't go into too much detail here. The
+important thing to note is that data structures in Clojure are immutable,
+and this enables them to be extremely performant. According to the site linked
+above, Clojure's data structures:
+
+> [give] practically O(1) runtime for appends, updates, lookups and subvec. As
+they are persistent [(immutable)], every modification creates a new vector
+instead of changing the old one.
+
+I strongly encourage you to read the article; there's some really neat computer
+science happening in there. The Clojure community leverages these highly
+performant and immutable data structures to achieve some big usability wins, as
+we'll see shortly.
+
+## Clojurescript
+Clojure is a language that compiles to JVM bytecode. Clojurescript is that same
+language when compiled to Javascript. For all practical purposes, the languages
+are functionally and syntactically equivalent, but code written in Clojurescript
+can run in the browser. From the [rationale section](https://github.com/clojure/clojurescript/wiki/Rationale)
+on the Clojurescript Github wiki:
+
+> ClojureScript seeks to address the weak link in the client/embedded application development story by replacing JavaScript with Clojure, a robust, concise and powerful programming language. In its implementation, ClojureScript adopts the strategy of the Google Closure library and compiler, and is able to effectively leverage both tools, gaining a large, production-quality library and whole-program optimization. ClojureScript brings the rich data structure set, functional programming, macros, reader, destructuring, polymorphism constructs, state discipline and many other features of Clojure to every place JavaScript reaches.
+
+Pay special attention to the part about the Google Closure library. This is a
+HUGE "free win" for UI development. We'll talk more about this later.
+
+## Clojurescript for UIs
+Applications written in Clojurescript rely on Facebook's fantastic [React library](https://facebook.github.io/react/blog/2013/06/05/why-react.html)
+for their view layer. This is important because of how React handles rendering:
+The view is a reflection of the data associated with components. There is no
+two-way data binding. Instead, the view treats application data stores as the
+single source of truth.
+
+React is only a view layer, however. The Javascript ecosystem is fragmented when
+it comes to how to handle the datastores and plumbing that powers the React-based
+views. The libraries for the non-view parts of React web apps number in the dozens:
+Flux, Redux, Alt, Flummox, MartyJS, McFly, DeLorean, Lux, OmniscientJS, on and on.
+
+Good thing we're using Clojurescript! This is where Clojurescript's immutable
+data structures begin to shine: We define the state of our entire application in
+a single data structure (Clojure's [Atom](http://clojure.org/reference/atoms)),
+and the UI reflects this data structure.
+
+But wait, if data structures are immutable, and our UI is backed by a single
+object, how do we update our UI?
+
+Great question!  Remember our discussion about State vs. Identity? The UI is a
+reflection of the current *identity* of the Atom. Atoms can have **transactions**
+applied to them, in which Clojure takes care of ensuring that these transactions
+are atomic, and the complete history of the Atom is saved thanks to the magic of
+Clojure's persistent (immutable) data structures.
+
+Like Git, the Atom represents the state of our application, and we can transact
+(commit) some data to it. Clojure makes sure the transaction is atomic (no merge
+conflicts), and the identity of our state now points at the new values, while
+preserving the "commit history" of all older states.
+
+The result is that application data flows in a circle.
+
+![Clojure State Diagram 1](./clojure_state1.png)
+
+Even if we introduce some complexity with the addition of external data sources,
+transactions on Clojure atoms are atomic (how about that!), so there's no chance
+that our state will get out of whack. Contrast this with Angular, in which the
+user is responsible for maintaining all variables individually in the midst of
+transient controllers.
+
+In Clojurescript, all we need to do is update our global application state (our
+Atom), and the UI will reflect the data stored therein. No digest cycles to
+update co-dependent values (and subsequently, the UI) incrementally, just a
+lightning-fast diff using React's VirtualDOM and Clojure's persistent data
+structures.
+
+## ClojureScript Advantages over Javascript
+Backing the state of our application with an Atom has numerous advantages
+compared with vanilla Javascript options:
+
++ The concept of "undo" is extremely easy to implement; because we have the
+  complete state history in our atom, and all transactions are saved (think: git
+  commits), restoring the atom (and, thus, the UI) to a previous state is
+  trivial.
++ The (nearly O(1)) efficiency of operating on Atoms, coupled with React's
+ability to quickly calculate DOM reflows thanks to its [Virtual DOM](http://reactkungfu.com/2015/10/the-difference-between-virtual-dom-and-dom/),
+  means that UI updates are extremely quick and jank-free.
++ Clojure's functional nature and immutable data structures, unlike Angular's
+  two-way data binding, makes it difficult to introduce side-effects, which,
+  in turn, reduces (or eliminates) a whole class of bugs generally present in UI
+  development.
 
 
+# The Clojure(Script) Ecosystem
+OK, this all sounds nice, but I've been light on the implementation details.
+Surely, working in Clojure is just as awful as all the rumors you've heard.
+All the *parentheses!*
 
-I have invested months of my free time researching how good UI development can
-be, and I believe the answers to our problems lie in the Clojure ecosystem, and
-the community surrounding it.
+You may be pleased to know that the Clojure(Script) ecosystem is a much easier
+ecosystem to navigate than the Javascript ecosystem. A low bar, what with the
+Javascript ecosystem being the butt of nearly all development jokes these days,
+but a step up nonetheless.
 
-In every HackerNews comments section about a great new Javascript tech are
-comments about how Clojure library X is the inspiration behind the new hotness,
-or how the solution to problem Y is simpler (or doesn't exist!) in Clojure.
+This section describes the tools that comprise the Clojure(script) ecosystem,
+and exists to show you that the grass is, in fact, greener on the other side.
+
+## Leiningen
+Leiningen is Clojure's answer to project management. It handles the jobs of many
+different Javascript tools:
+
++ Dependency management (like NPM and Bower)
++ Project scaffolding (like Yeoman, and others)
++ Task running (like Grunt or Gulp)
+
+But it's just one tool. And it's not crap. It's great.
+
+## Google Closure Compiler
+Remember I said we'd talk about this guy again? The Google Closure Compiler is
+fantastic, because it compiles all our Javascript into a single file.  Think
+webpack on steroids, because the Google Closure Compiler also does dead code
+elimination. I won't go into [the
+details](https://medium.com/@roman01la/dead-code-elimination-and-tree-shaking-in-javascript-build-systems-fb8512c86edf#.f2w2rszib) here, but
+
+=== Holding Pen ===
+Let's go back to our discussions about state.  Recall that AngularJS uses
+two-way data bindings to sync the views and controllers, and relies on the
+developer to persist any information required across multiple sections of the
+application (because controllers and views are transient).
 
