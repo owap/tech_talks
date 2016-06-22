@@ -1,7 +1,36 @@
 # Objectives
-+ Improve Workflow
-+ Improve Code Quality
++ Improve Development Workflow
++ Tighter feedback loops
 + Improve User Experience
++ Improve Code Quality
+
+# Table of Contents
+1. Introduction
+2. The Digest Cycle; State vs. Immutability
+  - AngularJS
+  - State vs Identity
+  - State in Clojure
+  - Clojurescript
+  - Clojurescript for UIs
+  - ClojureScript Advantages over Javascript
+3. The ClojureScript Ecosystem
+  - Leinengen (yeoman/npm++)
+  - Google Closure Compiler (webpack++)
+  - Figwheel (live development/auto reload/human debugging)
+  - Tools Summary (Javascript Interop)
+5. Rapid Feedback Loops via Component-first development (Devcards)
+  - Forces us to think about data in the beginning
+  - Extremely easy edge-case testing
+  - Rapid iteration and the ability to "Drop Into" the application
+4. Unit testing UI components
+  - Devcards may be sufficient
+  - Components as functions
+  - Randomly generated test data
+  - Spec?
+5. The Community
+  - Clojure for front and back
+  - JS interop for libraries like Leaflet
+  - Community (& Hammock-Driven Development)
 
 # Introduction: The OpenWhere User Interface State of the Union
 Developing the user interface is the bottleneck for many of our products.
@@ -80,7 +109,7 @@ My objective today is *not* to sell you on a rewrite of our codebase.
 
 My objective today is to discuss, in detail, how the Clojure/Clojurescript
 ecosystem can vastly improve the quality of life for UI developers and
-stakeholers, how it can speed up our UI development process, how it can lead to
+stakeholders, how it can speed up our UI development process, how it can lead to
 tighter, **positive** feedback loops, and how it enables easy (and thorough) unit
 testing of the UI.
 
@@ -89,28 +118,6 @@ conversation about the cost of adopting new tools and practices. Because there
 are some real treasures here; I only hope I can do a sufficient job explaining
 the benefits.
 
-# Topics
-1. State Management and the Digest Cycle
-2. Clojure(Script) and the UI
-3. Rapid Feedback Loops via Component-first development (Devcards)
-  - Forces us to think about data in the beginning
-  - Extremely easy edge-case testing
-  - Rapid iteration and the ability to "Drop Into" the application
-4. Unit testing UI components
-  - Devcards may be sufficient
-  - Components as functions
-  - Randomly generated test data
-  - Spec?
-5. The ecosystem
-  - Clojure for front and back
-  - JS interop for libraries like Leaflet
-  - Community (& Hammock-Driven Development)
-5. The user experience (freebies)
-"Everything you love about the Javascript ecosystem, without the Javascript!"
-  - Built-in features of the language (lodash, immutable data structures)
-  - Google Closure Compiler (webpack++)
-  - Leinengen (yeoman/npm++)
-  - Figwheel (live development/auto reload/human debugging)
 
 # The Digest Cycle; State vs. Immutability
 
