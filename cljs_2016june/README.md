@@ -10,39 +10,41 @@ Developing UIs involves shifting both bits *and* pixels, which is a
 time-intensive process. Because it takes longer to develop UIs (generally
 speaking) than the backend components that support them, our capability backlog
 of backend-supported features piles up, putting pressure on UI developers to
-"just get it done."
+expedite the UI development process.
 
 This time pressure, coupled with the fact that we have no customers embedded on
-the product team, means that we don't take the time to iterate on functionality and
-experience with our users as part of the development process.  We're inclined to
-say "good enough" to the features we develop, because they'll be presented to
-users at some point in the future, and besides, there's a lot of other features
-that need implementing.
+the product team, means that insufficient time is given to usability and user
+experience.  We're inclined to say "good enough" to the features we develop,
+because they'll be presented to users at some point in the future, and we'll
+improve upon those features even further down the road.
 
 Without active engagement and tight feedback loops, we assume that the features we
-implement are not in their final form, so writing unit tests for them takes a
+implement are not in their final form, so writing automated tests for them takes a
 back seat. Unit testing UIs is hard; why should we spend time testing unfinished
 features when there are NEW features that need implementing?
 
-This leads to codebase entropy (technical debt), because every one-off
-"just-get-it-done" feature is a source of application inconsistency, and a
-tangle of code that affects many different parts of the application when the
-inevitable rewrite comes along.
+This leads to codebase entropy (technical debt), because every "just-get-it-done"
+feature is an untested feature that may change when we put it in front of users.
+We cannot design a consistent application when every feature is developed in a
+vacuum without user input. Every usability change we're rushed into making
+(because we didn't budget time in the sprint for user feedback) results in a
+tangle of code, because the desired behavior was not considered as part of the
+initial design.
 
 We're not bad or sloppy developers; we clean up the code even as we implement
 new features. The new features we write now will be ones we clean up in the
 future; this isn't a bad thing, it's continuous refactoring. Unfortunately, most
-of these fixes are "quick wins," because anything that could bring about the BIG
-wins (such as when we implemented webpack or UI routing) takes weeks to implement
-and doesn't result in any new features or cosmetic enhancements, making it a hard
-sell to the people who pay our salaries. Those big wins allowed us to successfully
-deliver R8 on an extremely aggressive schedule, but we only celebrate what we
-can see, and what we can see needs quite a bit of improvement.
+continuous refactoring fixes are "quick wins," because anything that could bring
+about the BIG wins (such as when we implemented webpack or UI routing) takes
+weeks to implement and doesn't result in any new features or cosmetic enhancements,
+making it a hard sell to the people writing the checks. Those big wins allowed
+us to successfully deliver R9 on an extremely aggressive schedule, but we only
+celebrate what we can see, and what we can see still needs improvement.
 
 As our codebase grows, our technical debt compounds, but our productivity
 "income" remains constant. We quickly find ourselves in a negative feedback loop
 where any forward velocity on new features results in twice as much technical
-debt per hour of labor. How do you convince management that it's necessary to
+debt per hour of labor. How do you convince stakeholders that it's necessary to
 spend weeks fixing invisible problems when there are very visible problems that
 need fixing along with requested features that haven't yet been developed?
 
@@ -60,9 +62,9 @@ the way we build UIs at OpenWhere: Both the process (for developers AND
 stakeholders) as well as the end product.
 
 Every solution I've sought for these problems has eventually led back to the
-Clojure community. Their treasures are hiding in plain sight for anybody willing
-to invest the effort, and I'm excited by the practices and techniques enabled by
-these tools.
+Clojure community. They have treasures are hiding in plain sight for anybody who
+can get past the parentheses, and I'm excited by the practices and techniques
+enabled by these tools.
 
 What I am proposing will not be simple to implement. Learning new tools, problem-
 solving techniques, and ways of thinking about problems is a time-intensive
@@ -71,28 +73,35 @@ process, and I understand that time is a resource that is in short supply.
 What I hope to convince you of, however, is that the dividend offered by these
 new tools and skills will far outweigh the cost of learning them.
 
-In fact, I believe the benefits are so great, they will outweigh even the cost
+In fact, I believe the benefits are so great, they outweigh even the cost
 of transitioning our existing products to Clojure(script).
 
-My objective today is not to sell you on a rewrite of our codebase.
+My objective today is *not* to sell you on a rewrite of our codebase.
 
 My objective today is to discuss, in detail, how the Clojure/Clojurescript
-ecosystem can vastly improve the quality of life for UI developers, how it can
-speed up our UI development, how it can lead to tighter, **positive** feedback
-loops, and how it can lead to easy (and thorough) unit testing of the UI.
+ecosystem can vastly improve the quality of life for UI developers and
+stakeholers, how it can speed up our UI development process, how it can lead to
+tighter, **positive** feedback loops, and how it enables easy (and thorough) unit
+testing of the UI.
+
+Hopefully, what you'll take away from this is a willingness to have the hard
+conversation about the cost of adopting new tools and practices. Because there
+are some real treasures here; I only hope I can do a sufficient job explaining
+the benefits.
 
 # Topics
 1. State Management and the Digest Cycle
-2. Rapid Feedback Loops via Component-first development (Devcards)
+2. Clojure(Script) and the UI
+3. Rapid Feedback Loops via Component-first development (Devcards)
   - Forces us to think about data in the beginning
   - Extremely easy edge-case testing
   - Rapid iteration and the ability to "Drop Into" the application
-3. Unit testing UI components
+4. Unit testing UI components
   - Devcards may be sufficient
   - Components as functions
   - Randomly generated test data
   - Spec?
-4. The ecosystem
+5. The ecosystem
   - Clojure for front and back
   - JS interop for libraries like Leaflet
   - Community (& Hammock-Driven Development)
