@@ -115,8 +115,7 @@ testing of the UI.
 
 Hopefully, what you'll take away from this is a willingness to have the hard
 conversation about the cost of adopting new tools and practices. Because there
-are some real treasures here; I only hope I can do a sufficient job explaining
-the benefits.
+are some real treasures here; I only hope I can do them justice.
 
 
 # The Digest Cycle; State vs. Immutability
@@ -335,15 +334,15 @@ better job explaining than I can in a paragraph of text.
 The TL:DW; version of it goes like this: Figwheel watches your codebase, and
 every time something changes, it *instantly* updates the browser **without
 refreshing**. This is accomplished thanks to Clojure's functional nature and its
-persistent data structures being a reflection of the UI. You'll never need to
-click click type click click to revert back to an edge case ever again -- you
-can set the conditions for an edge case directly in your atom, and then test
-changes to the UI without ever refreshing and losing state.
+persistent data structures being a reflection of the UI. You'll never again need
+to click click type click click to revert back to an edge case -- you can set
+the conditions for an edge case directly in your atom, and then test changes to
+the UI without ever refreshing and losing state.
 
 This feature will save HOURS of developer time every release, and makes for an
-incredibly positive development experience. Developers don't lose flow state,
-feedback is instantaneous, and as a result, more work gets accomplished in less
-time.
+incredibly positive (magical) development experience. Developers don't break out
+of flow, feedback is instantaneous, and as a result, more work gets accomplished
+in less time.
 
 ## Tools Summary
 The other tools we will be working with are more implementation details than
@@ -354,4 +353,8 @@ do want to mention about the ClojureScript ecosystem:
 **ClojureScript has Javascript interoperability**. That means that any
 third-party Javascript library (such as Leaflet) works in Clojurescript, and
 your Clojurescript functions can invoke the Javascript functions as part of the
-library.
+library. As proof, check out this [proof-of-concept project](https://github.com/ajpierce/cljs-leaflet)
+I wrote as part of my personal campaign to dig up Clojure's treasures.
+
+
+# Rapid Feedback Loops via Component-first development
