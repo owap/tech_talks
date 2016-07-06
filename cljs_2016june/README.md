@@ -35,7 +35,7 @@
 # Introduction: The OpenWhere User Interface State of the Union
 Developing the user interface is the bottleneck for many of our products.
 
-Developing UIs involves shifting both bits *and* pixels, which is a
+Developing UIs involves shifting bits as well as pixels, which is a
 time-intensive process. Because it takes longer to develop UIs (generally
 speaking) than the backend components that support them, our capability backlog
 of backend-supported features piles up, putting pressure on UI developers to
@@ -82,7 +82,7 @@ becomes extremely important. I believe "good enough" is no longer good enough,
 and that changes (both cultural and technical) need to be made to how we develop
 user interfaces in order to achieve our full potential.
 
-# Clojure(script) is the answer
+## Clojure(script) Enables New Development Paradigms
 I have invested months of my free time researching technologies and techniques
 in search of answers to the problems outlined above. I've discovered that there
 are battle-tested tools and practices (used by other companies whose products and
@@ -95,9 +95,9 @@ Clojure community. They have treasures are hiding in plain sight for anybody who
 can get past the parentheses, and I'm excited by the practices and techniques
 enabled by these tools.
 
-What I am proposing will not be simple to implement. Learning new tools, problem-
-solving techniques, and ways of thinking about problems is a time-intensive
-process, and I understand that time is a resource that is in short supply.
+Learning new tools, problem-solving techniques, and ways of thinking about
+problems is a time-intensive process, and I understand that time is a resource
+that is in short supply.
 
 What I hope to convince you of, however, is that the dividend offered by these
 new tools and skills will far outweigh the cost of learning them.
@@ -113,10 +113,8 @@ stakeholders, how it can speed up our UI development process, how it can lead to
 tighter, **positive** feedback loops, and how it enables easy (and thorough) unit
 testing of the UI.
 
-Hopefully, what you'll take away from this is a willingness to have the hard
-conversation about the cost of adopting new tools and practices. Because there
-are some real treasures here; I only hope I can do them justice.
-
+By employing new tools, we can adopt new workflows, and achieve a development
+process that leads to higher-quality code and happier customers.
 
 # The Digest Cycle; State vs. Immutability
 
@@ -127,7 +125,7 @@ the system; everything that's on the screen, and everything that could be lurkin
 on the next screen. Search results, which buttons are toggled on, the color
 of the datasets; if it's interactive or navigable in some way, state is involved.
 
-![Angular State Diagram 1](./angular_state1.png)
+<img src="./angular_state1.png" width=600></img>
 
 A view comprises a certain set of items on the screen. Every view has an
 associated controller, which holds the variables (state) associated with that
@@ -150,7 +148,8 @@ State that needs to persist between Views gets saved to a Service, where the
 controller can pull out the cached data if we navigate back to a previous view.
 Services are persistent as long as the application is running, but are themselves
 reset every time the browser is refreshed.
-![Angular State Diagram 2](./angular_state2.png)
+
+<img src="./angular_state2.png" width=600></img>
 
 If we want to persist data beyond a browser session, we will need to employ
 external services (such as a database) for storing our information long-term.
@@ -242,13 +241,15 @@ preserving the "commit history" of all older states.
 
 The result is that application data flows in a circle.
 
-![Clojure State Diagram 1](./clojure_state1.png)
+<img src="./clojure_state1.png" width=600></img>
 
 Even if we introduce some complexity with the addition of external data sources,
 transactions on Clojure atoms are atomic (how about that!), so there's no chance
 that our state will get out of whack. Contrast this with Angular, in which the
 user is responsible for maintaining all variables individually in the midst of
 transient controllers.
+
+<img src="./clojure_state2.png" width=600></img>
 
 In Clojurescript, all we need to do is update our global application state (our
 Atom), and the UI will reflect the data stored therein. No digest cycles to
@@ -358,3 +359,115 @@ I wrote as part of my personal campaign to dig up Clojure's treasures.
 
 
 # Rapid Feedback Loops via Component-first development
+We've seen how tools like Figwheel can be used to instantly update our UI when
+we make code changes, without the need to refresh, lose state, and reconstruct
+our current view in the UI (which itself is enabled by the magic of Clojure's
+persistent data structures).  These features enable a fantastic UI development
+workflow, which we'll discuss below:
+
+## Component-First Development
+Component-First Development is the idea that your UI components are developed
+outside of your codebase, away from your API and back-end data sources. This has
+a number of advantages, including:
+
+1. You're required to think about the exact data needed to render a component
+   *before* building the UI (and its associated API endpoints). Emphasizing user
+   experience!
+2. Testing edge cases becomes extremely easy, because you no longer have to
+   manipulate application state by clicking through the app to satisfy
+   edge case conditions. Simply update the data store being passed to your
+   component, and watch it update in real time.
+3. Components can be composed incrementally, and components can be used to
+   compose other components. We end up with a working history of the UI, and we
+   can see changes in simple components cascade to larger components. (Think:
+   button styling cascading to the appearance of a toolbar)
+4. Components are functions that accept a data structure and
+   return UI elements (without relying on any application state). Because of
+   this, they can be dropped wired up to the "real" codebase with no changes.
+
+## Devcards
+Bruce Hauman, the author of Figwheel, wrote a tool that capitalizes on the
+principles of Component-First Development to drastically change how UIs are
+developed for the better.
+
+Read [this post](http://rigsomelight.com/2014/06/03/devcards-taking-interactivity-to-the-next-level.html),
+and watch [this video](http://rigsomelight.com/2014/06/03/devcards-taking-interactivity-to-the-next-level.html#developing-with-devcards),
+and then look at the [interactive demos](http://rigsomelight.com/devcards/#!/devdemos.core)
+on the devcards example page.
+
+## Leveraging Devcards for Tighter Feedback Loops
+Devcards expertly leverages ClojureScript's functional approach to UI
+development with automatic hot-reloading and persistent data structures to
+create a magical development experience for both developers and stakeholders.
+
+Here's how I imagine our development workflow progressing with Devcards:
+
+1. We receive a feature request: "I want a dashboard for tracking the progress
+   of my orders"
+2. We sit down the stakeholders and identify the problem(s) we're trying to
+   solve:
+   + "I want to know when the image I ordered is ready to view"
+   + "I want some indication of how long it takes to receive ordered images"
+   + "I want an indication of how far along we are in the image ordering process"
+   + "I want to know if my order fails"
+   + etc.
+3. The dev team takes inventory of all the data needed to reflect this
+   information to the user
+4. The UI team starts building the UI components to reflect this information
+   with the agreed-upon dataset(s) from step 3. If we need to change the dataset,
+   iteration is less expensive because we are not writing the API before the UI
+   is complete
+5. Interested stakeholders view components as they take shape thanks to devcards;
+   they can navigate in the browser to the IP address of a developer's computer,
+   and the UI components will automatically update themselves as the developer
+   saves the file, no refreshing necessary (just leave the tab open in the
+   background and check on it periodically)
+6. Stakeholders and developers interact with the components right in Devcards,
+   because they are interactive. For developers, the state is preserved between
+   changes, so it's very easy to get edge cases just right. For Stakeholders,
+   they can comment on the look/feel/behavior of components before we've written
+   the API to back them (leading to tighter feedback loops).
+7. When the developers and stakeholders are happy with the UI components, THEN
+   the API needed to fetch the data to populate them is written, and the
+   components are wired up to the API with little to no changes necessary
+
+
+## Leveraging Devcards for unit-testing UI components
+TODO? Continue writing this?
+
+# Old, maybe-useful text (no need to read)
+
+The idea behind Component-First Development came from challenging a number of
+assumptions the web development community makes about developing UIs.
+
+1. We use real application data to test our components
+2. The best way to get real application data is to hook it up to our backend and
+   fetch the data
+3. We write the UI code inside our project, because we're testing with real data,
+   and this is where the UI code is going to end up anyway.
+
+The first assumption is a good idea. After all, if you have real data, why not
+build your UI to it?
+
+The second assumption begins to tie UI development to our APIs, which doesn't
+seem like a big deal, because that's how the code is going to end up anyway,
+right? We'll populate our UI with data from our APIs.
+
+The third assumption is what the second assumption's slippery slope leads to.
+If I need to use our APIs to get my data, then why not just write the UI to be
+wired up to the APIs from the get-go? Won't I just make extra work for myself
+if I have to hook them up later?
+
+These are all great points, and it doesn't seem like there's anything *wrong*
+with this approach. But there's a better way to go about UI development!
+
+Clojure, as a functional programming language, values the use of pure functions.
+There are no stateful variables floating around within the global scope that
+could affect the output of a function; a function, when run on the same input,
+will always produce the same output.
+
+This means that, when we write our functions to build UI components, they are
+stateless. Whatever data is given them is what they will render on the screen.
+
+This allows/enables/requires us to think about the format of our data *before*
+we develop the UI around it.
