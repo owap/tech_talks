@@ -280,8 +280,13 @@ great at finding the least amount of work needed to update the view, and
 updating the view doesn't ALSO update the state (like it does in Angular).
 
 # Improvements
-The combination of Redux + React should yield the following improvements over
-our current AngularJS implementation:
+We can further improve Redux/React by using ImmutableJS for our
+single-source-of-truth data store. It satisfies all the criteria for Redux
+applications, and even plays nice with reducers (which themselves play nicely
+with RxJS).
+
+The combination of Redux + Immutable + React should yield the following
+improvements over our current AngularJS implementation:
 
 + Easy-to-reason-about application state that does not become more complex as we add new features
 + A stellar development experience that includes things like Hot Module Reloading (no need to refresh the browser!) that are impossible without stateless views (I'm looking at you, Angular!)
@@ -322,10 +327,10 @@ Hard to sum up the benefits in few words because there are lots of benefits, so
 it comes down to dollars, right?
 
 1. Devs will move faster because of the better development experience and reduced complexity. This will save you money (or earn you money quicker)
-2. This is a very popular Javascript solution (not a niche language like Clojure or Elm). This will save you dollars because:
+2. React + Redux is a very popular Javascript solution (not a niche language like Clojure or Elm). This will save you dollars because:
     + Devs don't need to be specialists, so recruiters won't spend as much time finding qualified candidates
     + There is more documentation/support online, so developers will be more immediately productive
-3. Developers will be happier working without the handcuffs of Angular, leading to increased retention, leading to less money spent on the overhead of finding and training new talent
+3. Developers will be happier working without the Shackles of Angular, leading to increased retention, leading to less money spent on the overhead of finding and training new talent
 4. Application performance will improve substantially, leading to a better user experience, leading to more conversions, leading to increased revenue.
 
 Thanks!
